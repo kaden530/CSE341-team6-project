@@ -4,6 +4,7 @@ import { Router } from 'express';
 import { homePage, aboutPage, testErrorPage } from './index.js';
 import apiRoutes from './api-routes.js';
 
+
 const router = Router();
 
 // API routes
@@ -20,6 +21,9 @@ router.get('/trains', trainsPage);
 
 // Trains API
 router.get('/api/trains', trainsApi);
+
+// Schedules API
+router.use(apiRoutes);
 
 // Rail trips
 router.use('/trips', railTripsRouter);

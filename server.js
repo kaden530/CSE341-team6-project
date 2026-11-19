@@ -8,9 +8,6 @@ const PORT = process.env.PORT || 3000;
 // Connect to MongoDB before accepting requests.
 await connectToDb();
 
-
-console.log('URI loaded:', Boolean(process.env.MONGODB_URI));
-console.log('DB Name:', process.env.MONGODB_DB_NAME || 'practice');
 await mongoose.connect(process.env.MONGODB_URI, {
     dbName: process.env.MONGODB_DB_NAME || 'practice',
 });
