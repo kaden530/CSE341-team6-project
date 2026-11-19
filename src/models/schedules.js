@@ -1,12 +1,18 @@
+//src/models/schedules.js
 import schedule from "./schemas/schedules.js";
+import { getDb } from "../db/connect.js";
 
 export async function getSchedulesByTripId(tripId, month) {
-    const filter = { tripId };
-
     if (month !== undefined) {
-        //ToDo: month filtering depends on what brother Poe says. I sent him a message
-        //The schedule data has no month or date field
+        // Temporary: replace with Feature 1's getTripById once it's merged!!!
+        const trip = await getDb()
+            .collection("trips")
+            .findOne({ id: tripId }, { projection: { operatingMonths: 1 } });
+
+        if (!trip?.operatingMonths?.includes(month)) {
+            return [];
+        }
     }
 
-    return schedule.find(filter).lean();
+    return schedule.find({ tripId }).lean();
 }
