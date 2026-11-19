@@ -2,6 +2,9 @@ import {
     getSchedulesForTrip,
     getSchedulesForTripAndMonth,
 } from "../controllers/schedules.js";
+import { Router } from "express";
+
+const router = Router();
 
 /**
  * @openapi
@@ -37,4 +40,6 @@ router.get("/api/trips/:id/schedules", (req, res) =>
     req.query.month !== undefined
         ? getSchedulesForTripAndMonth(req, res)
         : getSchedulesForTrip(req, res)
-  );
+);
+  
+export default router;

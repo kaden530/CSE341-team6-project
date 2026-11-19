@@ -1,4 +1,5 @@
-import { getSchedulesByTripId } from "../models/schedules";
+import { getSchedulesByTripId } from "../models/schedules.js";
+
 
 export async function getSchedulesForTrip(req, res) {
     try {
