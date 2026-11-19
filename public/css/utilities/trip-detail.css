@@ -368,3 +368,7 @@ article.route-detail {
         }
     }
 }
+
+.schedules-state[hidden] {
+    display: none;
+}
