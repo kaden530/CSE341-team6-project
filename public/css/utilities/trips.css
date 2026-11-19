@@ -1,236 +1,278 @@
-.routes-grid {
+/* =========================================
+   Filters & Status States
+   ========================================= */
+#filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-md);
+    margin: var(--space-lg) 0;
+    padding: var(--space-md);
+    background-color: var(--clr-surface-alt);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-md);
+    color: var(--clr-text-primary);
+
+    select {
+        padding: var(--space-xs) var(--space-sm);
+        border: 1px solid var(--clr-border);
+        border-radius: var(--radius-sm);
+        background-color: var(--clr-surface);
+        color: var(--clr-text-primary);
+    }
+}
+
+.trips-state {
+    text-align: center;
+    padding: var(--space-lg);
+    color: var(--clr-text-secondary);
+}
+
+.trips-error {
+    color: #9b2c2c;
+    background-color: #fff5f5;
+    border: 1px solid #feb2b2;
+    border-radius: var(--radius-md);
+}
+
+/* =========================================
+   Trips Grid & Cards
+   ========================================= */
+.trips-grid {
     display: flex;
     flex-direction: column;
     gap: var(--space-lg);
-    
-    .route-card {
+
+    .trip-card {
         background: var(--clr-surface);
-        border: 1px solid;
+        border: 1px solid var(--clr-border);
         border-radius: var(--radius-lg);
         padding: var(--space-lg);
         box-shadow: var(--shadow-sm);
-        
+
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto auto auto auto;
         grid-template-areas:
+            "image"
             "header"
-            "station"
-            "details"
+            "info"
             "description"
             "highlights"
             "actions";
         gap: var(--space-md);
-        
-        /* Regional Color Variations */
+
+        /* Regional Color Variations (matches card.classList.add(trip.region)) */
         &.central {
             background-color: var(--clr-region-central);
             border-color: var(--clr-region-central-border);
-            
-            .route-region {
+
+            .trip-region {
                 color: var(--clr-region-central-text);
             }
 
-            .highlight-tag, .season-badge {
+            [data-field="bestSeason"],
+            .route-actions a.view-details-btn {
                 border-color: var(--clr-region-central-border);
             }
-
-            .route-actions {
-                a.view-details-btn {
-                    border-color: var(--clr-region-central-border);
-                }
-            }
         }
-        
+
         &.northern {
             background-color: var(--clr-region-northern);
             border-color: var(--clr-region-northern-border);
-            
-            .route-region {
+
+            .trip-region {
                 color: var(--clr-region-northern-text);
             }
 
-            .highlight-tag, .season-badge {
+            [data-field="bestSeason"],
+            .route-actions a.view-details-btn {
                 border-color: var(--clr-region-northern-border);
             }
-
-            .route-actions {
-                a.view-details-btn {
-                    border-color: var(--clr-region-northern-border);
-                }
-            }
         }
-        
+
         &.kansai {
             background-color: var(--clr-region-kansai);
             border-color: var(--clr-region-kansai-border);
-            
-            .route-region {
+
+            .trip-region {
                 color: var(--clr-region-kansai-text);
             }
 
-            .highlight-tag, .season-badge {
+            [data-field="bestSeason"],
+            .route-actions a.view-details-btn {
                 border-color: var(--clr-region-kansai-border);
             }
-
-            .route-actions {
-                a.view-details-btn {
-                    border-color: var(--clr-region-kansai-border);
-                }
-            }
         }
-        
+
         &.hokkaido {
             background-color: var(--clr-region-hokkaido);
             border-color: var(--clr-region-hokkaido-border);
-            
-            .route-region {
+
+            .trip-region {
                 color: var(--clr-region-hokkaido-text);
             }
 
-            .highlight-tag, .season-badge {
+            [data-field="bestSeason"],
+            .route-actions a.view-details-btn {
                 border-color: var(--clr-region-hokkaido-border);
             }
+        }
 
-            .route-actions {
-                a.view-details-btn {
-                    border-color: var(--clr-region-hokkaido-border);
-                }
+        /* Card Image */
+        .trip-image-wrap {
+            grid-area: image;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            max-height: 260px;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
             }
         }
-        
-        .route-header {
+
+        /* Header */
+        .trip-card-header {
             grid-area: header;
             display: flex;
             flex-direction: column;
             gap: var(--space-xs);
-            
-            h2.route-name {
+
+            h2 {
                 font-size: var(--font-size-xl);
                 line-height: var(--line-height-lg);
                 color: var(--clr-text-primary);
                 margin: 0;
             }
-            
-            .route-region {
+
+            .trip-region {
                 line-height: var(--line-height-sm);
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
             }
         }
-        
-        .station-info {
-            grid-area: station;
+
+        /* Stations & Route Details (<dl class="trip-info">) */
+        .trip-info {
+            grid-area: info;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: var(--space-md);
-            flex-wrap: wrap;
-            
-            .station {
+            margin: 0;
+
+            .station-info {
                 display: flex;
                 align-items: center;
-                gap: var(--space-sm);
-                
-                .station-type {
-                    color: var(--clr-primary);
+                gap: var(--space-md);
+                flex-wrap: wrap;
+
+                .station {
+                    display: flex;
+                    align-items: center;
+                    gap: var(--space-sm);
+
+                    .station-type {
+                        color: var(--clr-primary);
+                    }
+
+                    dd {
+                        margin: 0;
+                        color: var(--clr-text-primary);
+                        text-transform: capitalize;
+                    }
                 }
-                
-                .station-name {
-                    color: var(--clr-text-primary);
-                    text-transform: capitalize;
+
+                .route-arrow {
+                    color: var(--clr-text-muted);
+                    font-size: var(--font-size-xl);
+                    line-height: var(--line-height-lg);
                 }
             }
-            
-            .route-arrow {
-                color: var(--clr-text-muted);
-                font-size: var(--font-size-xl);
-                line-height: var(--line-height-lg);
-            }
-        }
-        
-        .route-details {
-            grid-area: details;
-            display: flex;
-            gap: var(--space-md);
-            flex-wrap: wrap;
-            
-            .detail-item {
+
+            .route-details {
                 display: flex;
                 align-items: center;
-                gap: var(--space-xs);
-                
-                .detail-icon {
-                    font-size: var(--font-size-lg);
-                }
-                
-                span {
-                    .detail-label {
+                gap: var(--space-md);
+                flex-wrap: wrap;
+
+                .detail-item {
+                    display: flex;
+                    align-items: center;
+                    gap: var(--space-xs);
+
+                    .detail-icon {
+                        font-size: var(--font-size-lg);
+                    }
+
+                    dt {
+                        display: inline;
                         color: var(--clr-text-secondary);
                     }
-                }
-                
-                .season-badge {
-                    border-radius: var(--radius-md);
-                    border: 1px solid;
-                    display: inline-block;
-                    padding: var(--space-xs) var(--space-md);
-                    text-transform: capitalize;
-                    
-                    &.season-spring {
-                        background-color: var(--clr-spring);
-                        color: var(--clr-spring-text);
+
+                    dd {
+                        display: inline;
+                        margin: 0;
                     }
-                    
-                    &.season-summer {
-                        background-color: var(--clr-summer);
-                        color: var(--clr-summer-text);
-                    }
-                    
-                    &.season-autumn {
-                        background-color: var(--clr-autumn);
-                        color: var(--clr-autumn-text);
-                    }
-                    
-                    &.season-winter {
-                        background-color: var(--clr-winter);
-                        color: var(--clr-winter-text);
+
+                    /* Season Badge */
+                    [data-field="bestSeason"] {
+                        border-radius: var(--radius-md);
+                        border: 1px solid;
+                        display: inline-block;
+                        padding: var(--space-xs) var(--space-md);
+                        text-transform: capitalize;
+
+                        &.season-spring {
+                            background-color: var(--clr-spring);
+                            color: var(--clr-spring-text);
+                        }
+
+                        &.season-summer {
+                            background-color: var(--clr-summer);
+                            color: var(--clr-summer-text);
+                        }
+
+                        &.season-autumn {
+                            background-color: var(--clr-autumn);
+                            color: var(--clr-autumn-text);
+                        }
+
+                        &.season-winter {
+                            background-color: var(--clr-winter);
+                            color: var(--clr-winter-text);
+                        }
                     }
                 }
             }
         }
-        
-        .route-description {
+
+        /* Description */
+        .trip-description {
             grid-area: description;
             color: var(--clr-text-secondary);
+            margin: 0;
         }
-        
-        .highlights {
+
+        /* Highlights */
+        .trip-highlights {
             grid-area: highlights;
-            
-            .highlights-list {
-                display: flex;
-                gap: var(--space-sm);
-                flex-wrap: wrap;
-                
-                .highlight-tag {
-                    background-color: var(--clr-primary-pale);
-                    border-width: 1px;
-                    border-style: solid;
-                    color: var(--clr-text-secondary);
-                    padding: calc(var(--space-xs) / 2) var(--space-sm);
-                    font-size: var(--font-size-sm);
-                    line-height: var(--line-height-sm);
-                    border-radius: var(--radius-sm);
-                    text-transform: capitalize;
-                }
-            }
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+            margin: 0;
+            color: var(--clr-text-secondary);
+            font-size: var(--font-size-sm);
+            text-transform: capitalize;
         }
-        
+
+        /* Actions */
         .route-actions {
             grid-area: actions;
             display: flex;
             gap: var(--space-md);
-            
+
             a.view-details-btn {
                 display: inline-block;
                 padding: var(--space-sm) var(--space-lg);
@@ -242,7 +284,7 @@
                 text-decoration: none;
                 transition: background-color 0.2s ease, box-shadow 0.2s ease;
                 text-align: center;
-                
+
                 &:hover {
                     background-color: var(--clr-accent);
                     box-shadow: var(--shadow-md);
@@ -250,6 +292,7 @@
             }
         }
     }
+}
 
     /* Responsive Layout - Tablet */
     @media (min-width: 768px) {   
@@ -270,29 +313,44 @@
         }
     }
 
-    /* Responsive Layout - Desktop */
-    @media (min-width: 1024px) {
+/* Responsive Layout - Desktop */
+@media (min-width: 1024px) {
+    .trips-grid {
         gap: var(--space-xl);
-        
-        .route-card {
-            grid-template-columns: 1fr 1fr auto;
+
+        .trip-card {
+            grid-template-columns: 280px 1fr 1fr auto;
             grid-template-rows: auto auto auto auto;
             grid-template-areas:
-                "header station details"
-                "description description details"
-                "highlights highlights details"
-                "actions actions details";
+                "image header station details"
+                "image description description details"
+                "image highlights highlights details"
+                "image actions actions details";
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            
+
+            .trip-image-wrap {
+                max-height: none;
+                height: 100%;
+            }
+
+            .trip-info {
+                display: contents;
+            }
+
+            .station-info {
+                grid-area: station;
+            }
+
             .route-details {
+                grid-area: details;
                 flex-direction: column;
                 justify-content: center;
                 align-items: stretch;
                 gap: var(--space-md);
                 height: 100%;
-                
+
                 .detail-item {
                     align-items: center;
                     justify-content: flex-end;
