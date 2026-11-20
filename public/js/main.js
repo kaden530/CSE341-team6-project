@@ -88,8 +88,54 @@ const hookTrainsCatalog = async () => {
     }
 };
 
+const hookBookingsAdmin = async () => {
+    const listEl = document.getElementById('bookings-list');
+    const templateEl = document.getElementById('booking-card-template');
+
+    if (!listEl || !templateEl) {
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/bookings');
+        if (!response.ok) {
+            throw new Error(`Failed to load bookings (${response.status})`);
+        }
+
+        const { bookings } = await response.json();
+        const fragment = document.createDocumentFragment();
+
+        bookings.forEach((booking) => {
+            const card = templateEl.content.cloneNode(true);
+            const createdAt = new Date(booking.createdAt);
+            const passengerList = card.querySelector('[data-field="passengers"]');
+
+            card.querySelector('[data-field="id"]').textContent = booking.id;
+            card.querySelector('[data-field="created-at"]').textContent = createdAt.toLocaleString();
+            card.querySelector('[data-field="trip"]').textContent = booking.tripId;
+            card.querySelector('[data-field="schedule"]').textContent = booking.scheduleId;
+            card.querySelector('[data-field="ticket-class"]').textContent = booking.ticketClass;
+            card.querySelector('[data-field="day"]').textContent = booking.selectedDay;
+
+            booking.passengers.forEach((passenger) => {
+                const item = document.createElement('li');
+                item.textContent =
+                    `${passenger.firstName} ${passenger.lastName} - ${passenger.email} - ${passenger.phone}`;
+                passengerList.appendChild(item);
+            });
+
+            fragment.appendChild(card);
+        });
+
+        listEl.replaceChildren(fragment);
+    } catch (error) {
+        console.error('Unable to load bookings:', error);
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     hookRegionSorter();
     hookSeasonSorter();
     hookTrainsCatalog();
+    hookBookingsAdmin();
 });
