@@ -102,20 +102,20 @@ const hookBookingsAdmin = async () => {
             throw new Error(`Failed to load bookings (${response.status})`);
         }
 
-        const { bookings } = await response.json();
+        const bookings = await response.json();
         const fragment = document.createDocumentFragment();
 
         bookings.forEach((booking) => {
             const card = templateEl.content.cloneNode(true);
-            const createdAt = new Date(booking.createdAt);
+            const createdAt = new Date(booking.bookingDate);
             const passengerList = card.querySelector('[data-field="passengers"]');
 
-            card.querySelector('[data-field="id"]').textContent = booking.id;
+            card.querySelector('[data-field="id"]').textContent = booking._id;
             card.querySelector('[data-field="created-at"]').textContent = createdAt.toLocaleString();
             card.querySelector('[data-field="trip"]').textContent = booking.tripId;
             card.querySelector('[data-field="schedule"]').textContent = booking.scheduleId;
-            card.querySelector('[data-field="ticket-class"]').textContent = booking.ticketClass;
-            card.querySelector('[data-field="day"]').textContent = booking.selectedDay;
+            card.querySelector('[data-field="ticket-class"]').textContent = booking.ticketClassId;
+            card.querySelector('[data-field="day"]').textContent = booking.selectedDay || 'Not specified';
 
             booking.passengers.forEach((passenger) => {
                 const item = document.createElement('li');

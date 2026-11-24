@@ -26,7 +26,25 @@ const connectToDb = async (options = {}) => {
   }
   client = newClient;
   database = client.db(databaseName);
+  await removeLegacyBookingIdIndex(database);
   return database;
+};
+
+const removeLegacyBookingIdIndex = async (db) => {
+  const bookingCollection = await db
+    .listCollections({ name: 'bookings' }, { nameOnly: true })
+    .hasNext();
+
+  if (!bookingCollection) {
+    return;
+  }
+
+  const indexes = await db.collection('bookings').indexes();
+  const hasLegacyIdIndex = indexes.some((index) => index.name === 'id_1');
+
+  if (hasLegacyIdIndex) {
+    await db.collection('bookings').dropIndex('id_1');
+  }
 };
 
 const getDb = () => {

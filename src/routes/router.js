@@ -4,7 +4,6 @@ import apiRoutes from './api-routes.js';
 import { Router } from 'express';
 import { homePage, aboutPage, testErrorPage } from './index.js';
 import { bookingsAdminPage } from '../controllers/bookings.js';
-import apiRoutes from './api-routes.js';
 
 
 const router = Router();
@@ -23,9 +22,6 @@ router.use('/api', apiRoutes);
 
 // Bookings admin page
 router.get('/bookings-admin', bookingsAdminPage);
-
-// Schedules API
-router.use(apiRoutes);
 
 // Rail trips
 router.use('/trips', railTripsRouter);
