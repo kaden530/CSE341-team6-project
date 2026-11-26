@@ -2,7 +2,6 @@ import app from './app.js';
 import { connectToDb } from './src/db/connect.js';
 import mongoose from 'mongoose';
 
-
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
 
