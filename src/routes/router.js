@@ -7,6 +7,9 @@ import apiRoutes from './api-routes.js';
 
 const router = Router();
 
+// API routes
+router.use(apiRoutes);
+
 // Home page
 router.get('/', homePage);
 
