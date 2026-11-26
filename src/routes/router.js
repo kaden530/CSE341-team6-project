@@ -2,7 +2,7 @@ import railTripsRouter from './trips.js';
 import { trainsPage } from './trains.js';
 import apiRoutes from './api-routes.js';
 import { Router } from 'express';
-import { homePage, aboutPage, testErrorPage } from './index.js';
+import { homePage, aboutPage, registerPage, loginPage, testErrorPage } from './index.js';
 import { bookingsAdminPage } from '../controllers/bookings.js';
 
 
@@ -13,6 +13,10 @@ router.get('/', homePage);
 
 // About page
 router.get('/about', aboutPage);
+
+// Authentication pages
+router.get('/register', registerPage);
+router.get('/login', loginPage);
 
 // Trains page
 router.get('/trains', trainsPage);

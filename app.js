@@ -6,7 +6,9 @@ import globalMiddleware from './src/middleware/global.js';
 import routes from './src/routes/router.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
+import session from 'express-session';
 
+const SESSION_SECRET = process.env.SESSION_SECRET;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = Path.dirname(__filename);
 
@@ -25,6 +27,15 @@ const swaggerOptions = {
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+// Set up session management
+app.use(session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    rolling: true,
+    cookie: { maxAge: 60 * 60 * 1000 } // Session expires after 1 hour of inactivity
+}));
 
 app.use('/api-docs', swaggerUi.serve);
 app.get('/api-docs', swaggerUi.setup(swaggerSpec));
