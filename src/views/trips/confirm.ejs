@@ -12,7 +12,7 @@
         
         <div class="booking-reference">
             <span class="reference-label">Booking Reference</span>
-            <span class="reference-number"><%= confirmation.id %></span>
+            <span class="reference-number"><%= confirmation._id %></span>
         </div>
     </div>
 
@@ -25,7 +25,7 @@
                     <div class="detail-icon">🎫</div>
                     <div class="detail-content">
                         <span class="detail-label">Ticket Class</span>
-                        <span class="detail-value"><%= confirmation.ticketClass %></span>
+                        <span class="detail-value"><%= confirmation.ticketClassId %></span>
                     </div>
                 </div>
 
@@ -49,7 +49,7 @@
                     <div class="detail-icon">🕐</div>
                     <div class="detail-content">
                         <span class="detail-label">Booked On</span>
-                        <span class="detail-value"><%= new Date(confirmation.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
+                        <span class="detail-value"><%= new Date(confirmation.bookingDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
                     </div>
                 </div>
             </div>
@@ -69,14 +69,18 @@
                             <span class="passenger-label">Name</span>
                             <span class="passenger-value"><%= passenger.firstName %> <%= passenger.lastName %></span>
                         </div>
+                        <% if (passenger.email) { %>
                         <div class="passenger-detail">
                             <span class="passenger-label">Email</span>
                             <span class="passenger-value"><%= passenger.email %></span>
                         </div>
+                        <% } %>
+                        <% if (passenger.phone) { %>
                         <div class="passenger-detail">
                             <span class="passenger-label">Phone</span>
                             <span class="passenger-value"><%= passenger.phone %></span>
                         </div>
+                        <% } %>
                     </div>
                 </div>
                 <% }) %>
@@ -91,7 +95,7 @@
                     <div class="step-number">1</div>
                     <div class="step-content">
                         <h3 class="step-title">Check Your Email</h3>
-                        <p class="step-description">A confirmation email with your booking details and QR code has been sent to <%= confirmation.passengers[0].email %></p>
+                        <p class="step-description">A confirmation email with your booking details and QR code has been sent to <%= confirmation.passengers[0].email || 'the passenger address on file' %></p>
                     </div>
                 </div>
 

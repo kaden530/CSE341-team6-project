@@ -88,6 +88,51 @@ const hookTrainsCatalog = async () => {
     }
 };
 
+const hookBookingsAdmin = async () => {
+    const listEl = document.getElementById('bookings-list');
+    const templateEl = document.getElementById('booking-card-template');
+
+    if (!listEl || !templateEl) {
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/bookings');
+        if (!response.ok) {
+            throw new Error(`Failed to load bookings (${response.status})`);
+        }
+
+        const bookings = await response.json();
+        const fragment = document.createDocumentFragment();
+
+        bookings.forEach((booking) => {
+            const card = templateEl.content.cloneNode(true);
+            const createdAt = new Date(booking.bookingDate);
+            const passengerList = card.querySelector('[data-field="passengers"]');
+
+            card.querySelector('[data-field="id"]').textContent = booking._id;
+            card.querySelector('[data-field="created-at"]').textContent = createdAt.toLocaleString();
+            card.querySelector('[data-field="trip"]').textContent = booking.tripId;
+            card.querySelector('[data-field="schedule"]').textContent = booking.scheduleId;
+            card.querySelector('[data-field="ticket-class"]').textContent = booking.ticketClassId;
+            card.querySelector('[data-field="day"]').textContent = booking.selectedDay || 'Not specified';
+
+            booking.passengers.forEach((passenger) => {
+                const item = document.createElement('li');
+                item.textContent =
+                    `${passenger.firstName} ${passenger.lastName} - ${passenger.email} - ${passenger.phone}`;
+                passengerList.appendChild(item);
+            });
+
+            fragment.appendChild(card);
+        });
+
+        listEl.replaceChildren(fragment);
+    } catch (error) {
+        console.error('Unable to load bookings:', error);
+    }
+};
+
 const hookTripsCatalog =async() => {
     const listEl = document.getElementById('trips-list');
     const loadingEl = document.getElementById('trips-loading');
@@ -216,5 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
     hookRegionSorter();
     hookSeasonSorter();
     hookTrainsCatalog();
+    hookBookingsAdmin();
     hookTripsCatalog();
 });

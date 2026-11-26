@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb';
+import mongoose from 'mongoose';
 
 let database;
 let client;
@@ -15,10 +16,35 @@ const connectToDb = async (options = {}) => {
     throw new Error('MONGODB_URI is required.');
   }
 
-  client = new MongoClient(connectionString);
-  await client.connect();
+  const newClient = new MongoClient(connectionString);
+  await newClient.connect();
+  try {
+    await mongoose.connect(connectionString, { dbName: databaseName });
+  } catch (error) {
+    await newClient.close();
+    throw error;
+  }
+  client = newClient;
   database = client.db(databaseName);
+  await removeLegacyBookingIdIndex(database);
   return database;
+};
+
+const removeLegacyBookingIdIndex = async (db) => {
+  const bookingCollection = await db
+    .listCollections({ name: 'bookings' }, { nameOnly: true })
+    .hasNext();
+
+  if (!bookingCollection) {
+    return;
+  }
+
+  const indexes = await db.collection('bookings').indexes();
+  const hasLegacyIdIndex = indexes.some((index) => index.name === 'id_1');
+
+  if (hasLegacyIdIndex) {
+    await db.collection('bookings').dropIndex('id_1');
+  }
 };
 
 const getDb = () => {
@@ -29,6 +55,10 @@ const getDb = () => {
 };
 
 const closeDb = async () => {
+  if (mongoose.connection.readyState !== 0) {
+    await mongoose.disconnect();
+  }
+
   if (client) {
     await client.close();
     client = undefined;

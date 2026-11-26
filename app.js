@@ -5,14 +5,29 @@ import pkg from './package.json' with { type: 'json' };
 import globalMiddleware from './src/middleware/global.js';
 import routes from './src/routes/router.js';
 import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from './swagger.json' with { type: 'json' };
+import swaggerJsdoc from 'swagger-jsdoc';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = Path.dirname(__filename);
 
 const app = express();
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// swagger view api
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'Kizuna Rail API',
+            version: '1.0.0'
+        }
+    },
+    apis: ['./src/routes/*.js']
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+app.use('/api-docs', swaggerUi.serve);
+app.get('/api-docs', swaggerUi.setup(swaggerSpec));
 
 // Add version info to res.locals for access in templates.
 app.use((req, res, next) => {

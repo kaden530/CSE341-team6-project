@@ -1,14 +1,18 @@
-import { getSchedulesForTrip,
-    getSchedulesForTripAndMont`h,
-} from "../controllers/schedules.js";
-import{    getAllTrips,
-    getTripById
+import{    
+  getAllTrips,
+  getTripById
 } from "../controllers/trips.js";
 import { Router } from 'express';
-
+import { getAllBookings } from '../controllers/bookings.js';
+import { trainsApi } from './trains.js';
+import {
+    getSchedulesForTrip,
+    getSchedulesForTripAndMonth,
+} from "../controllers/schedules.js";
 
 const router = Router();
 
+router.get('/trains', trainsApi);
 
 //example 
 /**
@@ -146,6 +150,61 @@ router.get('/api/trips/:id', getTripById);
 
 
 /**
+ * @swagger
+ * /api/bookings:
+ *   get:
+ *     summary: Get all bookings
+ *     tags:
+ *       - Bookings
+ *     responses:
+ *       200:
+ *         description: Bookings retrieved successfully
+ *                 type: object
+ *                 required:
+ *                   - _id
+ *                   - tripId
+ *                   - scheduleId
+ *                   - ticketClassId
+ *                   - passengers
+ *                   - totalPrice
+ *                   - bookingDate
+ *                   - status
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                   tripId:
+ *                     type: string
+ *                   scheduleId:
+ *                     oneOf:
+ *                       - type: string
+ *                       - type: integer
+ *                   ticketClassId:
+ *                     type: string
+ *                   passengers:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                   totalPrice:
+ *                     type: number
+ *                   bookingDate:
+ *                     type: string
+ *                     format: date-time
+ *                   status:
+ *                     type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error
+ */
+router.get('/bookings', getAllBookings);
+
+/**
  * @openapi
  * /api/trips/{id}/schedules:
  *   get:
@@ -175,7 +234,7 @@ router.get('/api/trips/:id', getTripById);
  *       500:
  *         description: Failed to fetch schedules
  */
-router.get("/api/trips/:id/schedules", (req, res) =>
+router.get("/trips/:id/schedules", (req, res) =>
     req.query.month !== undefined
         ? getSchedulesForTripAndMonth(req, res)
         : getSchedulesForTrip(req, res)
