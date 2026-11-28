@@ -23,6 +23,7 @@
                                 name="ticketClass" 
                                 id="ticket-<%= ticket.class %>" 
                                 value="<%= ticket.class %>"
+                                data-class="<%= ticket.class %>"
                                 data-name="<%= ticket.name %>"
                                 data-price="<%= ticket.price %>"
                                 <%= index === 1 ? 'checked' : '' %>
@@ -402,6 +403,9 @@
             label.classList.add('selected');
             label.querySelector('input').checked = true;
             label.querySelector('input').setAttribute('checked', true);
+            const selectedDay =
+                label.querySelector('input').value;
+                updateAvailableTicketClasses(selectedDay);
         });
     });
 
@@ -450,7 +454,82 @@
         selectedTicketName.textContent = ticketName;
         ticketPrice = parseInt(selectedRadio.dataset.price);
     }
+    const updateAvailableTicketClasses = async (day) => {
+    try {
+        const response = await fetch(
+        `/api/ticket-classes?day=${encodeURIComponent(day)}`
+        );
+
+        const availableTickets =
+        await response.json();
+
+        const availableClasses =
+        availableTickets.map(
+            ticket => ticket.class
+        );
+
+        ticketRadios.forEach((radio) => {
+        const card =
+            radio.closest('.ticket-card');
+
+        const ticketClass =
+            radio.dataset.class;
+
+        const available =
+            availableClasses.includes(
+            ticketClass
+            );
+
+        radio.disabled = !available;
+
+        if (available) {
+            card.style.opacity = '1';
+            card.style.pointerEvents = 'auto';
+        } else {
+            card.style.opacity = '0.4';
+            card.style.pointerEvents = 'none';
+        }
+        });
+
+        const selected =
+        document.querySelector(
+            'input[name="ticketClass"]:checked'
+        );
+
+        if (!selected || selected.disabled) {
+        const firstAvailable =
+            [...ticketRadios].find(
+            radio => !radio.disabled
+            );
+
+        if (firstAvailable) {
+            firstAvailable.checked = true;
+
+            selectedTicketName.textContent =
+            firstAvailable.dataset.name;
+
+            ticketPrice = parseInt(
+            firstAvailable.dataset.price
+            );
+
+            updateSummary();
+        }
+        }
+
+    } catch (error) {
+        console.error(
+        'Error loading ticket classes:',
+        error
+        );
+    }
+    };
+
     updateSummary();
+    const initialDay =document.querySelector('input[name="selectedDay"]:checked');
+
+    if (initialDay) {
+        updateAvailableTicketClasses(initialDay.value);
+    }
 </script>
 
 <%- include('../partials/footer') %>

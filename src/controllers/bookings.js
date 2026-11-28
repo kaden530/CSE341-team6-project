@@ -5,13 +5,17 @@ import {
     getBookingById
 } from '../models/bookings.js';
 
+import {
+  getAllTicketClasses
+} from '../models/ticket-classes.js';   
+
 export const bookingPage = async (req, res) => {
     const { scheduleId } = req.params;
 
     const db = getDb();
     const schedule = await db.collection('schedules').findOne({ id: Number(scheduleId) });
     const trip = await db.collection('trips').findOne({ id: schedule.tripId });
-    const ticketClasses = await db.collection('ticketClasses').find({}).toArray();
+    const ticketClasses = await getAllTicketClasses();
     const ticketOptions = ticketClasses.map((ticketClass) => ({
         class: ticketClass.class,
         name: ticketClass.name,
