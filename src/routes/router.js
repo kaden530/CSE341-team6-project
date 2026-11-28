@@ -8,8 +8,6 @@ import { bookingsAdminPage } from '../controllers/bookings.js';
 
 const router = Router();
 
-// API routes
-router.use(apiRoutes);
 
 // Home page
 router.get('/', homePage);
@@ -23,13 +21,14 @@ router.get('/trains', trainsPage);
 // API routes
 router.use('/api', apiRoutes);
 
-// Bookings admin page
-router.get('/bookings-admin', bookingsAdminPage);
-
 // Rail trips
 router.use('/trips', railTripsRouter);
 
+// Bookings admin page
+router.get('/bookings-admin', bookingsAdminPage);
+
 // Test 500 error page
 router.get('/500', testErrorPage);
+
 
 export default router;

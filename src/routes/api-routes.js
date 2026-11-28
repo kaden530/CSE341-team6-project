@@ -1,3 +1,4 @@
+
 import{    
   getAllTrips,
   getTripById
@@ -10,7 +11,15 @@ import {
     getSchedulesForTripAndMonth,
 } from "../controllers/schedules.js";
 
+import {
+  getAllTicketClassesApi,
+  getTicketClassesForDayApi,
+} from "../controllers/ticket-classes.js";
+
+
+
 const router = Router();
+
 
 router.get('/trains', trainsApi);
 
@@ -109,7 +118,7 @@ router.get('/trains', trainsApi);
  *             example:
  *               error: Failed to fetch trips
  */
-router.get('/api/trips', getAllTrips);
+router.get('/trips', getAllTrips);
 
 //  Api route by ID
 /**
@@ -146,7 +155,8 @@ router.get('/api/trips', getAllTrips);
  *             example:
  *               error: Failed to fetch trip
  */
-router.get('/api/trips/:id', getTripById);
+router.get('/trips/:id', getTripById);
+
 
 
 /**
@@ -239,5 +249,33 @@ router.get("/trips/:id/schedules", (req, res) =>
         ? getSchedulesForTripAndMonth(req, res)
         : getSchedulesForTrip(req, res)
 );
+
+/**
+ * @swagger
+ * /api/ticket-classes:
+ *   get:
+ *     summary: Returns ticket classes
+ *     description: Returns all ticket classes or ticket classes available for a specific day.
+ *     parameters:
+ *       - in: query
+ *         name: day
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Day of week
+ *     responses:
+ *       200:
+ *         description: Ticket classes retrieved successfully
+ *       500:
+ *         description: Server error
+ */
+router.get("/ticket-classes", async (req, res) => {
+
+  if (req.query.day) {
+    return getTicketClassesForDayApi(req, res);
+  }
+
+  return getAllTicketClassesApi(req, res);
+});
 
 export default router;
